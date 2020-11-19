@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" validUntil="2020-11-17T06:44:18Z" cacheDuration="PT1606027458S" entityID="dummy">
+  <md:IDPSSODescriptor WantAuthnRequestsSigned="false" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+    <md:KeyDescriptor use="signing">
+      <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+        <ds:X509Data>
+          <ds:X509Certificate>MIICQDCCAamgAwIBAgIBADANBgkqhkiG9w0BAQ0FADA9MQswCQYDVQQGEwJ1czEOMAwGA1UECAwFZHVtbXkxDjAMBgNVBAoMBWR1bW15MQ4wDAYDVQQDDAVkdW1teTAeFw0yMDExMTUwNjQ0MDJaFw0yMTExMTUwNjQ0MDJaMD0xCzAJBgNVBAYTAnVzMQ4wDAYDVQQIDAVkdW1teTEOMAwGA1UECgwFZHVtbXkxDjAMBgNVBAMMBWR1bW15MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDN3ZPI9ZDgOu+u0yM0ex5FeMOH5jCV3vIfdeZ8SNw8dbEbmIbfPS7qeMfotZRH8t+gY8Y3mEGbQKANki+GhZLXccXLK4q7Xnxl8mQDIiOg34WBrOKCDA7zqju4uI19CBOcKuLhDg3REMfZL6kXZlHrUA16edakfBpT8Dq2g4/D0wIDAQABo1AwTjAdBgNVHQ4EFgQUKUI9SIpbkXY2Um4PkSiLfrcSTQQwHwYDVR0jBBgwFoAUKUI9SIpbkXY2Um4PkSiLfrcSTQQwDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQ0FAAOBgQDIFZPakUOK35nej/TA4VZh+OX1JF+hZI1NM1lmaR94tnRFbOW2Puh0B2jKa5OLdqlfttS0CqETZjUXBJg3JP80anj+0YEg6P1AyOfzXjSzNL/vUjJWwgiPOfVvIsGM6wVciKQVEwJYtrwHq4FaufsKAxxvWyiqMtOy5w524b1tYw==</ds:X509Certificate>
+        </ds:X509Data>
+      </ds:KeyInfo>
+    </md:KeyDescriptor>
+    <md:KeyDescriptor use="encryption">
+      <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+        <ds:X509Data>
+          <ds:X509Certificate>MIICQDCCAamgAwIBAgIBADANBgkqhkiG9w0BAQ0FADA9MQswCQYDVQQGEwJ1czEOMAwGA1UECAwFZHVtbXkxDjAMBgNVBAoMBWR1bW15MQ4wDAYDVQQDDAVkdW1teTAeFw0yMDExMTUwNjQ0MDJaFw0yMTExMTUwNjQ0MDJaMD0xCzAJBgNVBAYTAnVzMQ4wDAYDVQQIDAVkdW1teTEOMAwGA1UECgwFZHVtbXkxDjAMBgNVBAMMBWR1bW15MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDN3ZPI9ZDgOu+u0yM0ex5FeMOH5jCV3vIfdeZ8SNw8dbEbmIbfPS7qeMfotZRH8t+gY8Y3mEGbQKANki+GhZLXccXLK4q7Xnxl8mQDIiOg34WBrOKCDA7zqju4uI19CBOcKuLhDg3REMfZL6kXZlHrUA16edakfBpT8Dq2g4/D0wIDAQABo1AwTjAdBgNVHQ4EFgQUKUI9SIpbkXY2Um4PkSiLfrcSTQQwHwYDVR0jBBgwFoAUKUI9SIpbkXY2Um4PkSiLfrcSTQQwDAYDVR0TBAUwAwEB/zANBgkqhkiG9w0BAQ0FAAOBgQDIFZPakUOK35nej/TA4VZh+OX1JF+hZI1NM1lmaR94tnRFbOW2Puh0B2jKa5OLdqlfttS0CqETZjUXBJg3JP80anj+0YEg6P1AyOfzXjSzNL/vUjJWwgiPOfVvIsGM6wVciKQVEwJYtrwHq4FaufsKAxxvWyiqMtOy5w524b1tYw==</ds:X509Certificate>
+        </ds:X509Data>
+      </ds:KeyInfo>
+    </md:KeyDescriptor>
+    <md:NameIDFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified</md:NameIDFormat>
+    <md:SingleSignOnService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Redirect" Location="http://dummy.cyberark.com/signin"/>
+  </md:IDPSSODescriptor>
+</md:EntityDescriptor>
+

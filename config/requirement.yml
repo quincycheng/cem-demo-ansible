@@ -1,0 +1,6 @@
+---
+collections:
+  - name: community.aws
+  - name: cyberark.conjur
+  - name: azure.azcollection
+

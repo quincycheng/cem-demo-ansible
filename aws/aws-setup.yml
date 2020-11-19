@@ -1,0 +1,149 @@
+- hosts: localhost
+  gather_facts: False
+  tasks:
+  - include_vars: ../config/cem.config
+
+  - name: Get AWS info
+    amazon.aws.aws_caller_info:
+    register: caller_info
+
+  - name: Grant Mike Administrator Access
+    community.aws.iam_user:
+      name: Mike
+      managed_policies:
+        - arn:aws:iam::aws:policy/AdministratorAccess
+      state: present
+
+  - name: Grant John AmazonEC2FullAccess
+    community.aws.iam_user:
+      name: John
+      managed_policies:
+        - arn:aws:iam::aws:policy/AmazonEC2FullAccess
+      state: present
+
+  - name: Remove Robert for clean up
+    community.aws.iam_user:
+      name: "{{ item }}"
+      state: absent
+    loop:
+      - Robert
+
+  - name: Create Robert with AKSK
+    community.aws.iam:
+      iam_type: user
+      name: Robert
+      state: present
+      access_key_state: create
+      key_count: 1
+    register: credentials
+
+  - name: Robert > 3 managed policies
+    community.aws.iam_user:
+      name: Robert
+      managed_policies:
+        - arn:aws:iam::aws:policy/AmazonRDSFullAccess
+        - arn:aws:iam::aws:policy/AmazonEC2FullAccess
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+      state: present
+
+  - debug: var=credentials
+
+  - debug:
+      msg: "access key is {{ credentials.user_meta.access_keys[0].access_key_id }}"
+  
+  - debug:
+      msg: "aws_secret_key is {{ credentials.user_meta.access_keys[0].secret_access_key }}"
+
+
+  - name: YOURSELF > 3 managed policies
+    community.aws.iam_user:
+      name: "{{ AWS_YOURSELF }}"
+      managed_policies:
+        - arn:aws:iam::aws:policy/AmazonRDSFullAccess
+        - arn:aws:iam::aws:policy/AmazonEC2FullAccess
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+      state: present
+   
+  - name: Create Admins Group
+    community.aws.iam_group:
+      name: Admins
+      managed_policies:
+        - arn:aws:iam::aws:policy/AdministratorAccess 
+      state: present
+
+  - name: Create Developers Group
+    community.aws.iam_group:
+      name: Developers
+      managed_policies:
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+        - arn:aws:iam::aws:policy/IAMFullAccess
+        - arn:aws:iam::aws:policy/AmazonRDSFullAccess
+        - arn:aws:iam::aws:policy/AmazonEC2FullAccess
+      users:
+        - Robert
+      state: present
+
+  - name: "Create IAM Role"
+    community.aws.iam_role:
+      name: AWS_ServiceRole_EC2FullAccess
+      assume_role_policy_document: 
+        Version: '2012-10-17'
+        Statement:
+        - Action: sts:AssumeRole
+          Effect: Allow
+          Principal:
+            Service: ec2.amazonaws.com
+      managed_policies:
+        - arn:aws:iam::aws:policy/AmazonEC2FullAccess
+
+  - name: Create SAML Provider
+    community.aws.iam_saml_federation:
+      name: "{{ AWS_SAML_PROVIDER_NAME }}"
+      saml_metadata_document: "{{ item }}"
+    with_file: "{{ AWS_SAML_PROVIDER_METADATA }}"
+
+
+  - name: Create a S3 Bucket
+    amazon.aws.s3_bucket:
+      name: "{{ AWS_S3_BUCKET_NAME }}-{{ caller_info.account }}"
+      state: present
+
+  - name: Create S3 bucket policy
+    community.aws.iam_managed_policy:
+      policy_name: "S3_BucketAccess_Policy"
+      policy: "{{ lookup('file','s3_bucketacess_policy.json') }}"
+      state: present
+
+  - name: "Create IDP Role"
+    community.aws.iam_role:
+      name: AWS-IDP-AdminAccess-Role
+      assume_role_policy_document: 
+        Version: '2012-10-17'
+        Statement:
+        - Action: sts:AssumeRoleWithSAML
+          Effect: Allow
+          Principal:
+            Federated: "arn:aws:iam::{{ caller_info.account }}:saml-provider/{{ AWS_SAML_PROVIDER_NAME }}"  
+          Condition:
+            StringEquals:
+              "SAML:aud": "https://signin.aws.amazon.com/saml"
+      managed_policies:
+        - arn:aws:iam::aws:policy/AdministratorAccess
+        - arn:aws:iam::{{ caller_info.account }}:policy/S3_BucketAccess_Policy
+
+  - name: Robert - create dummy policy
+    community.aws.iam_managed_policy:
+      aws_access_key: "{{ credentials.user_meta.access_keys[0].access_key_id }}"
+      aws_secret_key: "{{ credentials.user_meta.access_keys[0].secret_access_key }}"
+      policy_name: "Robert_Dummy_S3_BucketAccess_Policy"
+      policy: "{{ lookup('file','s3_bucketacess_policy.json') }}"
+      state: present
+
+  - name: Robert - list S3
+    amazon.aws.aws_s3:
+      aws_access_key: "{{ credentials.user_meta.access_keys[0].access_key_id }}"
+      aws_secret_key: "{{ credentials.user_meta.access_keys[0].secret_access_key }}"
+      bucket: "{{ AWS_S3_BUCKET_NAME }}-{{ caller_info.account }}"
+      mode: list
+
+
