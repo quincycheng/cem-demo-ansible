@@ -27,12 +27,12 @@ Setting up CEM demo on cloud platforms using Ansible
 2. Set the environment for AWS
 
    - CLI
-```
-export AWS_ACCESS_KEY_ID=[Your AWS Access Key]
-export AWS_SECRET_ACCESS_KEY=[Your AWS Secret Key]
-```
-    - Summon
-      Please refer to https://github.com/cyberark/summon to prepare `secrets.yml`
+      ```
+      export AWS_ACCESS_KEY_ID=[Your AWS Access Key]
+      export AWS_SECRET_ACCESS_KEY=[Your AWS Secret Key]
+      ```
+   - Summon
+     Please refer to https://github.com/cyberark/summon to prepare `secrets.yml`
 
 3. Copy `config/cem-sample.config` as `config/cem.config` and update the configurations
    The variables should be self-explanatory.
